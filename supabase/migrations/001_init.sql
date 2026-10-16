@@ -66,6 +66,3 @@ alter table public.private_notes enable row level security;
 
 revoke all on public.accounts, public.passkeys, public.challenges, public.sessions, public.private_notes
   from anon, authenticated;
-
--- 참고: 처음에는 계정 생성/패스키 삭제를 DB 함수로 묶으려 했지만, 이 환경에서는 함수 정의 적용이 계속 취소되어
--- 같은 일을 Edge Function 코드(registerVerify, deletePasskey)에서 하도록 바꿨습니다. 위 SQL이 실제로 적용된 전부입니다.
