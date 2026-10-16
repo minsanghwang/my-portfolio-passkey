@@ -308,25 +308,44 @@ async function registerVerify(req: Request, origin: string) {
     throw new HttpError(400, "registration_invalid", "등록 응답을 확인하지 못했습니다.");
   }
   const info = verification.registrationInfo;
-  const { data: accountId, error } = await db.rpc("register_account", {
-    p_handle: row.handle,
-    p_user_handle: row.user_handle,
-    p_credential_id: info.credential.id,
-    p_public_key: b64url(info.credential.publicKey),
-    p_counter: info.credential.counter,
-    p_device_type: info.credentialDeviceType,
-    p_backed_up: info.credentialBackedUp,
-    p_transports: info.credential.transports ?? response.response.transports ?? [],
-    p_aaguid: info.aaguid,
-    p_passkey_name: row.passkey_name,
-    p_notes: seedNotes(row.handle),
-  });
-  if (error) {
-    if (error.code === "23505") throw new HttpError(409, "already_registered", "이미 등록된 계정 이름이거나 패스키입니다.");
-    if (error.message?.includes("account_limit")) throw new HttpError(503, "account_limit", "데모 계정 수 한도에 도달했습니다.");
-    throw error;
+
+  // 서명 확인이 끝난 "지금"에서야 계정과 공개키를 저장합니다. (그 전에 취소하면 저장되는 것이 없습니다)
+  const { count: accountCount } = await db.from("accounts").select("id", { count: "exact", head: true });
+  if ((accountCount ?? 0) >= 50) throw new HttpError(503, "account_limit", "데모 계정 수 한도에 도달했습니다.");
+
+  const { data: created, error: accountErr } = await db.from("accounts")
+    .insert({ handle: row.handle, user_handle: row.user_handle }).select("id").single();
+  if (accountErr) {
+    if (accountErr.code === "23505") throw new HttpError(409, "already_registered", "이미 등록된 계정 이름입니다.");
+    throw accountErr;
   }
-  const { cookie, expires } = await createSession(accountId as string, info.credential.id);
+  const accountId = created!.id as string;
+  // 이후 단계가 실패하면 방금 만든 계정을 지워(공개키·항목은 연쇄 삭제) 반쪽짜리 계정이 남지 않게 합니다.
+  const undo = () => db.from("accounts").delete().eq("id", accountId);
+
+  const { error: keyErr } = await db.from("passkeys").insert({
+    id: info.credential.id,
+    account_id: accountId,
+    name: row.passkey_name,
+    public_key: b64url(info.credential.publicKey), // 공개키만. 개인키는 서버에 온 적이 없습니다.
+    counter: info.credential.counter,
+    device_type: info.credentialDeviceType,
+    backed_up: info.credentialBackedUp,
+    transports: info.credential.transports ?? response.response.transports ?? [],
+    aaguid: info.aaguid,
+  });
+  if (keyErr) {
+    await undo();
+    if (keyErr.code === "23505") throw new HttpError(409, "already_registered", "이미 등록된 패스키입니다.");
+    throw keyErr;
+  }
+  const { error: noteErr } = await db.from("private_notes")
+    .insert(seedNotes(row.handle).map((n) => ({ ...n, account_id: accountId })));
+  if (noteErr) {
+    await undo();
+    throw noteErr;
+  }
+  const { cookie, expires } = await createSession(accountId, info.credential.id);
   return json(200, { verified: true, account: { id: accountId, handle: row.handle }, sessionExpiresAt: expires.toISOString() }, {
     "Set-Cookie": cookie,
   });
@@ -496,13 +515,27 @@ async function addPasskeyVerify(req: Request, origin: string) {
 
 async function deletePasskey(req: Request, passkeyId: string) {
   const s = await requireSession(req);
-  const { data, error } = await db.rpc("delete_passkey_guarded", { p_account: s.accountId, p_passkey: passkeyId });
-  if (error) throw error;
-  if (data === "last_passkey") {
-    throw new HttpError(409, "last_passkey", "마지막 패스키는 지울 수 없습니다. 이 데모에는 계정 복구 수단이 없어, 지우면 영영 못 들어옵니다. 먼저 다른 패스키를 등록하세요.");
-  }
-  if (data === "not_found") throw new HttpError(404, "passkey_not_found", "내 계정에 그런 패스키가 없습니다.");
+  const lastPasskey = () => new HttpError(409, "last_passkey",
+    "마지막 패스키는 지울 수 없습니다. 이 데모에는 계정 복구 수단이 없어, 지우면 영영 못 들어옵니다. 먼저 다른 패스키를 등록하세요.");
+
+  // 항상 "세션의 계정" 안에서만 찾습니다. 남의 패스키 id를 보내도 여기서는 없는 것으로 보입니다(404).
+  const { data: own, error: listErr } = await db.from("passkeys").select("*").eq("account_id", s.accountId);
+  if (listErr) throw listErr;
+  const target = (own ?? []).find((p: any) => p.id === passkeyId);
+  if (!target) throw new HttpError(404, "passkey_not_found", "내 계정에 그런 패스키가 없습니다.");
+  if ((own ?? []).length <= 1) throw lastPasskey();
+
+  const { error: delErr } = await db.from("passkeys").delete().eq("id", passkeyId).eq("account_id", s.accountId);
+  if (delErr) throw delErr;
+
+  // 거의 동시에 두 패스키를 지워 0개가 되어 버렸다면 되돌립니다. (DB 함수 없이 지키는 방식이라 남은 허점은 설명서 ⑥에 적었습니다)
   const { count } = await db.from("passkeys").select("id", { count: "exact", head: true }).eq("account_id", s.accountId);
+  if ((count ?? 0) === 0) {
+    await db.from("passkeys").insert(target);
+    throw lastPasskey();
+  }
+  // 지운 패스키로 열린 세션은 즉시 끊습니다.
+  await db.from("sessions").delete().eq("account_id", s.accountId).eq("passkey_id", passkeyId);
   return json(200, { deleted: true, remaining: count ?? 0, endedCurrentSession: passkeyId === s.passkeyId });
 }
 

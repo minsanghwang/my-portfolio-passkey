@@ -3,8 +3,6 @@
 -- 모든 테이블은 RLS를 켜고 정책을 만들지 않아, 공개 API 키로는 읽을 수 없습니다.
 -- 서버(Edge Function)만 service role 키로 접근합니다.
 
-create extension if not exists pgcrypto;
-
 create table public.accounts (
   id           uuid primary key default gen_random_uuid(),
   handle       text not null unique check (handle ~ '^[a-z0-9][a-z0-9_-]{2,23}$'),
@@ -69,56 +67,5 @@ alter table public.private_notes enable row level security;
 revoke all on public.accounts, public.passkeys, public.challenges, public.sessions, public.private_notes
   from anon, authenticated;
 
--- 등록 마무리: 계정 + 첫 패스키 + 비공개 항목을 한 번에(원자적으로) 만듭니다.
-create or replace function public.register_account(
-  p_handle text, p_user_handle text,
-  p_credential_id text, p_public_key text, p_counter bigint,
-  p_device_type text, p_backed_up boolean, p_transports text[], p_aaguid text,
-  p_passkey_name text, p_notes jsonb
-) returns uuid
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  v_account uuid;
-begin
-  if (select count(*) from accounts) >= 50 then
-    raise exception 'account_limit' using errcode = 'P0001';
-  end if;
-  insert into accounts(handle, user_handle) values (p_handle, p_user_handle) returning id into v_account;
-  insert into passkeys(id, account_id, name, public_key, counter, device_type, backed_up, transports, aaguid)
-    values (p_credential_id, v_account, p_passkey_name, p_public_key, p_counter, p_device_type, p_backed_up, p_transports, p_aaguid);
-  insert into private_notes(account_id, kind, title, body)
-    select v_account, n->>'kind', n->>'title', n->>'body' from jsonb_array_elements(p_notes) n;
-  return v_account;
-end;
-$$;
-
--- 패스키 삭제: 계정 행을 잠근 뒤 "마지막 하나"인지 세고 지웁니다. 동시에 두 개를 지워도 하나는 남습니다.
-create or replace function public.delete_passkey_guarded(p_account uuid, p_passkey text)
-returns text
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-  v_count int;
-begin
-  perform 1 from accounts where id = p_account for update;
-  if not exists (select 1 from passkeys where id = p_passkey and account_id = p_account) then
-    return 'not_found';
-  end if;
-  select count(*) into v_count from passkeys where account_id = p_account;
-  if v_count <= 1 then
-    return 'last_passkey';
-  end if;
-  delete from passkeys where id = p_passkey and account_id = p_account;
-  -- 지운 패스키로 만든 세션은 즉시 끊습니다.
-  delete from sessions where account_id = p_account and passkey_id = p_passkey;
-  return 'deleted';
-end;
-$$;
-
-revoke execute on function public.register_account(text,text,text,text,bigint,text,boolean,text[],text,text,jsonb) from public, anon, authenticated;
-revoke execute on function public.delete_passkey_guarded(uuid,text) from public, anon, authenticated;
+-- 참고: 처음에는 계정 생성/패스키 삭제를 DB 함수로 묶으려 했지만, 이 환경에서는 함수 정의 적용이 계속 취소되어
+-- 같은 일을 Edge Function 코드(registerVerify, deletePasskey)에서 하도록 바꿨습니다. 위 SQL이 실제로 적용된 전부입니다.
