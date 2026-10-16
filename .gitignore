@@ -1,0 +1,18 @@
+# OS / 에디터 캐시
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 혹시 나중에 폼 전송 기능(EmailJS, Formspree 등)을 추가할 경우
+# 환경변수/키 파일은 항상 아래 패턴으로 저장소에서 제외하세요.
+.env
+.env.*
+*.key
+*.pem
+secrets.json
+config.local.js
+
+# 민감할 수 있는 개인 자료(이력서 원본 PDF 등)를 저장소에 넣지 마세요.
+/private/
+resume-private.pdf

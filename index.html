@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>황민상 - 프로젝트</title>
+<meta name="description" content="황민상의 포트폴리오, 자기소개 등을 기술.">
+
+<!-- ===================================================================
+  콘텐츠 수정 안내
+  - 이 파일 안에서 "EDIT" 라는 단어가 붙은 주석 블록의 텍스트만 바꾸면 됩니다.
+  - 태그 구조(div, class 등)는 되도록 건드리지 마세요. 레이아웃이 깨질 수 있습니다.
+  - 이메일/연락처는 js/contact.js 안의 값만 수정하세요 (본문에는 절대 평문으로 적지 마세요).
+=================================================================== -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main">본문 바로가기</a>
+
+<div class="grid-backdrop" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">MS</span>
+      <!-- EDIT: 이름 -->
+      <span class="brand-name">황민상</span>
+    </a>
+
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="primaryNav">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="sr-only">메뉴 열기</span>
+    </button>
+
+    <nav class="primary-nav" id="primaryNav" aria-label="주요 메뉴">
+      <a href="#about" class="nav-link">소개</a>
+      <a href="#experience" class="nav-link">경력</a>
+      <a href="#skills" class="nav-link">스킬</a>
+      <a href="#projects" class="nav-link">공개할 것과 공개하지 않을 것</a>
+      <a href="#contact" class="nav-link">연락처</a>
+      <a href="#vault" class="nav-link nav-link-private">나만의 자리 <span aria-hidden="true">🔒</span></a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- 공개/비공개 경계 표시: 이 줄부터 "나만의 자리" 구분선 전까지는 누구나 볼 수 있습니다. -->
+  <div class="zone-banner" role="note">
+    <div class="section-inner">
+      <span class="zone-chip zone-chip-public">PUBLIC</span>
+      누구나 볼 수 있는 소개입니다. 맨 아래 <a href="#vault">나만의 자리</a>만 패스키로 잠겨 있습니다.
+    </div>
+  </div>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="top">
+    <div class="section-inner hero-inner">
+      <p class="eyebrow"><span class="eyebrow-tick" aria-hidden="true">◍</span> PORTFOLIO / REV. 2026</p>
+      <!-- EDIT: 헤드라인 -->
+      <h1 class="hero-title">
+        황민상 <span class="ink-underline">취업</span>준비생<br>
+        꽃피우기 전
+      </h1>
+      <!-- EDIT: 소개문구 3개 (제목/상세 텍스트만 바꾸세요, 구조는 유지) -->
+      <div class="intro-accordion" id="introAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-heading">
+            <button type="button" class="accordion-trigger" id="intro1-btn" aria-expanded="false" aria-controls="intro1-panel">
+              <span>1)강점. 멘탈.</span>
+              <span class="accordion-icon" aria-hidden="true">+</span>
+            </button>
+          </h2>
+          <div class="accordion-panel" id="intro1-panel" role="region" aria-labelledby="intro1-btn" aria-hidden="true">
+            <p>시험이 다가와도 늘 하던 공부니 잘 할거라는 자신감이 튼튼한 멘탈 같습니다.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-heading">
+            <button type="button" class="accordion-trigger" id="intro2-btn" aria-expanded="false" aria-controls="intro2-panel">
+              <span>2)강점. 유연함.</span>
+              <span class="accordion-icon" aria-hidden="true">+</span>
+            </button>
+          </h2>
+          <div class="accordion-panel" id="intro2-panel" role="region" aria-labelledby="intro2-btn" aria-hidden="true">
+            <p>유연한 사고방식으로 의견이 나와 다른 사람이어도 의연하게 대처 가능합니다.</p>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-heading">
+            <button type="button" class="accordion-trigger" id="intro3-btn" aria-expanded="false" aria-controls="intro3-panel">
+              <span>3)취향. 웹소설</span>
+              <span class="accordion-icon" aria-hidden="true">+</span>
+            </button>
+          </h2>
+          <div class="accordion-panel" id="intro3-panel" role="region" aria-labelledby="intro3-btn" aria-hidden="true">
+            <p>대학 웹소설 공모전에서 대상 수상을 하며 꿈을 꿨었습니다.</p>
+          </div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="#projects" class="btn btn-primary">프로젝트 보기</a>
+        <a href="#contact" class="btn btn-ghost">이메일 주소</a>
+      </div>
+    </div>
+    <div class="hero-scale" aria-hidden="true">
+      <span>2019</span><span>2021</span><span>2023</span><span>2026</span>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="section" id="about">
+    <div class="section-inner">
+      <p class="section-eyebrow">01 · 소개</p>
+      <h2 class="section-title">About</h2>
+      <div class="about-grid">
+        <!-- EDIT: 자기소개 본문 -->
+        <p class="about-text">
+          SK ALEPH 과정을 이수중에 있으며, AI를 이용한 나만의 온라인 포트폴리오 완성을 위해 작성하고 있습니다.
+        </p>
+        <dl class="about-facts">
+          <div class="fact">
+            <dt>Focus</dt>
+            <!-- EDIT -->
+            <dd>AI, BRAIN SCIENCE, NETWORK</dd>
+          </div>
+          <div class="fact">
+            <dt>Based in</dt>
+            <!-- EDIT -->
+            <dd>Daejeon, South Korea</dd>
+          </div>
+          <div class="fact">
+            <dt>Status</dt>
+            <!-- EDIT -->
+            <dd><span class="stamp">취업 준비중인 상태</span></dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section class="section section-alt" id="experience">
+    <div class="section-inner">
+      <p class="section-eyebrow">02 · 경력</p>
+      <h2 class="section-title">Experience</h2>
+
+      <ol class="timeline">
+        <!-- EDIT: 경력 항목 (li 통째로 복사해서 늘려도 됩니다) -->
+        <li class="timeline-item">
+          <div class="timeline-period">2025 — 2026</div>
+          <div class="timeline-body">
+            <h3>구직활동 및 스펙 쌓는 중</h3>
+            <p>정보처리기사, 리눅스마스터 2급 등의 자격증을 취득하기 위해 공부중이며 열정적인 구직활동에 있습니다.</p>
+          </div>
+        </li>
+        <li class="timeline-item">
+          <div class="timeline-period">2019 — 2021</div>
+          <div class="timeline-body">
+            <h3>대한민국 육군 병장 만기 전역</h3>
+            <p>양주의 군부대에서 155mm 자주포병으로 국방의 의무를 다했습니다.</p>
+          </div>
+        </li>
+        <li class="timeline-item">
+          <div class="timeline-period">2019 — 2025</div>
+          <div class="timeline-body">
+            <h3>대학생</h3>
+            <p>대전 모 대학 재학 및 군 입대, 휴학 후 프리랜서 활동을 하였습니다.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section class="section" id="skills">
+    <div class="section-inner">
+      <p class="section-eyebrow">03 · 스킬</p>
+      <h2 class="section-title">Skills</h2>
+
+      <div class="skill-groups">
+        <!-- EDIT: 스킬 그룹/항목 -->
+        <div class="skill-group">
+          <h3>Languages</h3>
+          <ul class="tag-list">
+            <li>C</li><li>JAVA</li><li>C#</li><li>Python</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Languages2</h3>
+          <ul class="tag-list">
+            <li>한국어</li><li>ENGLISH</li><li>AMERICAN</li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>Tools</h3>
+          <ul class="tag-list">
+            <li>Git</li><li>Figma</li><li>Visual Studio Code</li><li>Visual Studio</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section class="section section-alt" id="projects">
+    <div class="section-inner">
+      <p class="section-eyebrow">04 · 공개할 것과 공개하지 않을 것</p>
+      <h2 class="section-title">Projects</h2>
+
+      <div class="filter-bar" role="group" aria-label="프로젝트 카테고리 필터">
+      <!--  <button class="filter-btn is-active" data-filter="all">전체</button>
+        <button class="filter-btn" data-filter="web">공개할 것</button>-->
+       <!-- 
+        <button class="filter-btn" data-filter="design">디자인</button>
+      
+        <button class="filter-btn" data-filter="tool">공개하지 않을 것</button>
+          -->
+      </div>
+
+      <div class="project-grid" id="projectGrid">
+        <!-- EDIT: 프로젝트 카드 (article 통째로 복사해서 늘려도 됩니다) -->
+        <article class="project-card" data-category="web" tabindex="0">
+          <div class="project-card-head">
+            <span class="folder-tab">public</span>
+          <!--  <span class="stamp stamp-done"></span>-->
+          </div>
+          <h3>공개할 것</h3>
+          <p class="project-period"></p>
+          <p class="project-summary">
+           이름, 나이, 이메일 주소.
+          </p>
+          <ul class="tag-list tag-list-sm">
+            <li>황민상</li><li>99년생</li><li>이메일 하단 버튼 참조</li>
+          </ul>
+        </article>
+        <article class="project-card" data-category="tool" tabindex="0">
+          <div class="project-card-head">
+            <span class="folder-tab">private</span>
+          <!--  <span class="stamp stamp-progress">진행중</span>-->
+          </div>
+          <h3>공개하지 않을 것</h3>
+          <p class="project-period"></p>
+          <p class="project-summary">
+            전화번호, 얼굴, 학교.
+          </p>
+          <ul class="tag-list tag-list-sm">
+            <li>개인정보</li><li>보호</li><li>프라이버시</li>
+          </ul>
+        </article>
+<!--
+
+        <article class="project-card" data-category="design" tabindex="0">
+          <div class="project-card-head">
+            <span class="folder-tab">DESIGN</span>
+            <span class="stamp stamp-done">완료</span>
+          </div>
+          <h3>사내 컴포넌트 라이브러리</h3>
+          <p class="project-period">2023.06 — 2023.12</p>
+          <p class="project-summary">
+            30여 개의 재사용 가능한 UI 컴포넌트를 문서화하고 Storybook으로 배포했습니다.
+          </p>
+          <ul class="tag-list tag-list-sm">
+            <li>Storybook</li><li>Figma</li><li>접근성</li>
+          </ul>
+        </article>
+
+        -->
+      </div>
+
+      <p class="filter-empty" id="filterEmpty" hidden>선택한 카테고리에 해당하는 프로젝트가 아직 없습니다.</p>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="section" id="contact">
+    <div class="section-inner contact-inner">
+      <p class="section-eyebrow">05 · 연락처</p>
+      <h2 class="section-title">Contact</h2>
+      <!-- EDIT: 연락 안내 문구 -->
+      <p class="contact-lead">
+        아래 버튼을 누르면 이메일 주소가 표시됩니다.
+      </p>
+
+      <div class="contact-actions">
+        <button class="btn btn-primary" id="revealEmailBtn" aria-describedby="emailHelp">
+          이메일 주소 보기
+        </button>
+        <p class="contact-revealed" id="emailRevealed" aria-live="polite"></p>
+        <p class="contact-help" id="emailHelp">클릭 시에만 주소가 화면에 표시됩니다 (자동 수집 방지).</p>
+      </div>
+
+      <ul class="social-links">
+        <!-- EDIT: 실제 프로필 URL로 교체하거나, 공개하지 않을 항목은 li째로 삭제하세요 -->
+        <li><a href="https://github.com/minsanghwang/my-portfolio" target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+        <!--
+        <li><a href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+        -->
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================================================================
+    PUBLIC / PRIVATE 경계
+    위쪽은 공개 영역, 아래쪽 #vault 는 패스키로 잠근 비공개 영역입니다.
+    비공개 항목의 내용은 이 HTML 어디에도 없습니다. 로그인한 뒤 서버(/api/private/notes)가 내려 주는 값을 js/auth.js가 그립니다.
+  ==================================================================== -->
+  <div class="zone-divider" role="separator" aria-label="여기부터 비공개 영역">
+    <div class="section-inner zone-divider-inner">
+      <span><span class="zone-chip zone-chip-public">PUBLIC</span> 여기까지는 누구나 볼 수 있습니다</span>
+      <span class="zone-divider-arrow" aria-hidden="true">▼</span>
+      <span><span class="zone-chip zone-chip-private">PRIVATE</span> 여기부터는 패스키로 잠겨 있습니다</span>
+    </div>
+  </div>
+
+  <section class="section zone-private" id="vault" aria-labelledby="vaultTitle">
+    <div class="section-inner">
+      <p class="section-eyebrow">06 · 나만의 자리 <span class="zone-chip zone-chip-private">PRIVATE</span></p>
+      <h2 class="section-title" id="vaultTitle">Vault</h2>
+
+      <!-- 잠긴 상태(기본). 비밀번호 입력 칸은 없습니다. -->
+      <div id="vaultLocked">
+        <p class="vault-lead">
+          이 자리는 <strong>패스키</strong>로 잠겨 있습니다. 비밀번호는 만들지 않습니다.
+          등록할 때 내 기기가 열쇠 한 쌍을 만들어 <em>공개키만</em> 서버로 보내고, 개인키는 기기 밖으로 나가지 않습니다.
+          들어갈 때는 서버가 매번 새 질문을 보내고, 기기가 그 질문에 서명해 답합니다.
+        </p>
+        <div class="vault-panels">
+          <div class="vault-panel">
+            <h3>이미 패스키가 있다면</h3>
+            <p>기기가 알려 주는 패스키를 고르면 됩니다. 계정 이름은 입력하지 않아도 됩니다.</p>
+            <button type="button" class="btn btn-light" id="loginBtn">패스키로 들어가기</button>
+          </div>
+          <form class="vault-panel" id="registerForm" autocomplete="off">
+            <h3>처음이라면</h3>
+            <p>계정 이름을 정하고 패스키를 만듭니다. (영문 소문자·숫자·_·- 3~24자)</p>
+            <label class="vault-label" for="handleInput">계정 이름</label>
+            <input class="vault-input" id="handleInput" name="handle" type="text" inputmode="text"
+                   minlength="3" maxlength="24" pattern="[a-z0-9][a-z0-9_\-]{2,23}" placeholder="예: demo-a" required>
+            <label class="vault-label" for="firstPasskeyName">패스키 이름 (알아보기 위한 이름)</label>
+            <input class="vault-input" id="firstPasskeyName" name="passkeyName" type="text" maxlength="40" placeholder="예: 내 노트북">
+            <button type="submit" class="btn btn-light" id="registerBtn">패스키 만들고 들어가기</button>
+          </form>
+        </div>
+        <p class="vault-note">
+          이 자리에 들어 있는 내용은 모두 데모용으로 만들어 넣은 것이며 실제 개인정보가 아닙니다.
+        </p>
+      </div>
+
+      <!-- 열린 상태. 로그인한 뒤에만 js/auth.js가 채웁니다. (여기에는 항목 내용이 없습니다) -->
+      <div id="vaultOpen" hidden>
+        <div class="vault-bar">
+          <p class="vault-who"><span id="vaultWho"></span> 님의 자리</p>
+          <button type="button" class="btn btn-light" id="logoutBtn">로그아웃</button>
+        </div>
+
+        <h3 class="vault-subtitle">나만 볼 수 있는 항목</h3>
+        <div class="vault-notes" id="vaultNotes"></div>
+
+        <h3 class="vault-subtitle">내 패스키</h3>
+        <p class="vault-help">기기를 잃어버릴 때를 대비해 패스키를 두 개 이상 등록해 두세요. 마지막 하나는 지울 수 없습니다.</p>
+        <div class="vault-table-wrap">
+          <table class="vault-table" id="passkeyTable">
+            <caption class="sr-only">등록된 패스키 목록</caption>
+            <thead><tr><th scope="col">이름</th><th scope="col">등록한 날짜</th><th scope="col">저장 위치(추정)</th><th scope="col">마지막 사용</th><th scope="col"><span class="sr-only">관리</span></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <form class="vault-add" id="addPasskeyForm" autocomplete="off">
+          <label class="vault-label" for="newPasskeyName">새 패스키 이름</label>
+          <input class="vault-input" id="newPasskeyName" type="text" maxlength="40" placeholder="예: 휴대폰">
+          <button type="submit" class="btn btn-light" id="addPasskeyBtn">패스키 추가 등록</button>
+        </form>
+      </div>
+
+      <p class="vault-message" id="vaultMessage" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="section-inner footer-inner">
+    <!-- EDIT: 저작권 이름 -->
+    <p>© <span id="year"></span> 클로드를 이용해 만들었습니다.</p>
+    <button class="back-to-top" id="backToTop" aria-label="맨 위로 이동">↑ TOP</button>
+  </div>
+</footer>
+
+<script src="js/contact.js"></script>
+<script src="js/main.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
