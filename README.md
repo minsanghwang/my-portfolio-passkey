@@ -18,4 +18,8 @@
 | `supabase/migrations/001_init.sql` | 표 정의. 비밀번호 칼럼 없음, 공개키만 저장 |
 | `vercel.json` | `/api/*`를 서버 함수로 이어 주고(같은 출처), 보안 헤더 설정 |
 
-문서와 확인 기록은 이어서 `docs/`에 추가합니다.
+## 문서
+
+- [인증 구현 설명서](docs/인증-구현-설명서.md): 확인 방법 4줄, AI와 내 판단, ①~⑥
+- [확인 기록(원본)](docs/evidence/확인기록.md)
+- [확인용 콘솔 도구](test/evidence-console.js)
